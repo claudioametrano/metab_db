@@ -234,7 +234,7 @@ for r1 in "$IN_DIR"/*_R1_001.fastq_1perc.fastq.gz; do
     echo "Done with $sample"
 done 
 ```
-***Note***
+***NOTE***
 > This could have been carried out in a more elegant way putting the script in a file and launcing in a `singularity exec` command, but we took the chance to take a look at the script!
 
 ### TASK 4
