@@ -156,7 +156,7 @@ $ singularity pull https://depot.galaxyproject.org/singularity/multiqc:1.26--pyh
 
 $ singularity exec --bind "$(pwd)":/in multiqc\:1.26--pyhdfd78af_0 multiqc /in/results/fastqc_raw_out/ -o /in/results/multiqc_raw_out
 ```
-#### **TASK2**
+### **TASK2**
 > Now check the .html output of R1 and R2 fastq file from some of the samples (download it from server by Filezilla or any other client) and the aggregated report of MultuQC and try to answer the following questions:
 > - 1. Which of the warnings thrown by fasQC are of actual concern, and which are not? Why?
 > - 2. Do you notice any difference in term of quality between corresponding R1 and R2 files?
