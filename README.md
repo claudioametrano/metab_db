@@ -168,12 +168,12 @@ $ singularity exec --bind "$(pwd)":/in multiqc\:1.26--pyhdfd78af_0 multiqc /in/r
 ![[P5_to_P7.png]]
 taken from [this](https://teichlab.github.io/scg_lib_structs/methods_html/Illumina.html) informative website
 ### **TASK3** 
->FastQC do not search for your custom primer (well, not by default) so now it is your turn to do so:
->Primer for 16S rRNA (V3-V4 region) 
->Forward: Pro341F (5’-CCTACGGGNBGCASCAG-3’)
->Reverse: Pro805R (5’-GACTACNVGGGTATCTAATCC-3’)]
->Do you notice anything unusual?
->[IUPAC nucleotide code](https://pmc.ncbi.nlm.nih.gov/articles/PMC2865858/)
+> FastQC do not search for your custom primer (well, not by default) so now it is your turn to do so:
+> Primer for 16S rRNA (V3-V4 region) 
+> Forward: Pro341F (5’-CCTACGGGNBGCASCAG-3’)
+> Reverse: Pro805R (5’-GACTACNVGGGTATCTAATCC-3’)]
+> Do you notice anything unusual?
+> [IUPAC nucleotide code](https://pmc.ncbi.nlm.nih.gov/articles/PMC2865858/)
 >
 > **Questions:**
 > - Do all sequence have primers? Where in the sequence?
