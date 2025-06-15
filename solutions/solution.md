@@ -37,7 +37,7 @@ reverse primer search and count with regex
 ```bash
 zgrep --color=auto -B1 -E "GACTAC[A|C|G|T][A|C|G]GGGTATCTAATCC" ./data/16S_biochar_run2_10perc_sampled/*.fastq.gz
 ```
-if you need to count them drop -B and add -c arguments 
+if you need to count them drop -B and add -c arguments. 
 Some R1 have the reverse primer and viceversa! (very few, it should be close to zero)
 
 if you want only the reads that do not match the pattern of forward primer in R1, so you can check what is "wrong" with them
