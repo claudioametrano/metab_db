@@ -399,7 +399,7 @@ $ singularity exec  --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime feat
 ```
 as the training can run for very long, abort it with ctrl+C, we will use an already trained classifier
 #### Classify the representative sequences associated to each ASV
-Now that we have the classifier we can use it to classify our sequences
+Now that we have the classifier we can use it to classify our sequences... or at least try, this step is RAM intensive
 ```bash
 $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime feature-classifier classify-sklearn \
   --p-n-jobs 4 \
