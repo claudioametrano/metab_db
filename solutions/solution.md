@@ -62,4 +62,4 @@ cd -
 Resampling for rarefaction cannot be higher than the total frequency (8000 would work here) of the highest frequency in samples. Also too low would not show well enough how all the samples behave at increased sampling effort. 
 
 **TASK 7**
-Chloroplast and mithochondria ancestors were free living prokaryotes and they have their own 16S rDNA with is captured with universal bacterial 16S primers (also, they can be abundant marine water samples)
+Chloroplast and mithochondria ancestors were free living prokaryotes and they have their own 16S rDNA with is captured with universal bacterial 16S primers (also, they can be abundant in marine water samples)
