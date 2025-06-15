@@ -178,7 +178,7 @@ taken from [this](https://teichlab.github.io/scg_lib_structs/methods_html/Illumi
 > **Questions:**
 > - Do all sequence have primers? Where in the sequence?
 > - Is there any sequence that do not match your search? if so, why?
-> (hint: use zgrep with regular expression (-E) and the regex e.g. "\[A | T]" when more than one character is possible, see grep --help. Note that "|" has here a different meaning in regex than it has as a pipe, here it means OR)
+> (hint: use zgrep with regular expression (-E) and the regex e.g. "\[A | T]" when more than one character is possible, see grep --help. Note that "|" has a different meaning in regex than it has as a pipe, here it means OR)
 
 #### 2.2 Quality trimming and adapter removal
 Many software are available (fastp, Trimmomatic, cutadapt etc.) with various option and approaches to trimming, removing adapters and/or primers, even though these reads are of really have quality and denoising algoritm work usually well with raw reads, there is a little room for improvement (let's check after the trimming if it is worth it)
