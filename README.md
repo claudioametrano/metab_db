@@ -172,7 +172,9 @@ taken from [this](https://teichlab.github.io/scg_lib_structs/methods_html/Illumi
 > Primer for 16S rRNA (V3-V4 region) 
 >
 > Forward: Pro341F (5’-CCTACGGGNBGCASCAG-3’)
+>
 > Reverse: Pro805R (5’-GACTACNVGGGTATCTAATCC-3’)]
+>
 > Do you notice anything unusual?
 > [IUPAC nucleotide code](https://pmc.ncbi.nlm.nih.gov/articles/PMC2865858/)
 >
