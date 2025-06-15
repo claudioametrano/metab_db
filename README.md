@@ -346,8 +346,8 @@ $ singularity exec  --bind "$(pwd)":/in --home "$(pwd)":/home/qiime2 amplicon_20
 
 Observing the table and the frequencies of features (ASVs) it is clear that metabarcoding data (especially when relying on ASVs as unit) are characterized by **sparsity**: the scenario where a large percentage of data within a dataset is missing or is set to zero.
 Possible strategy to limit this data issue:
-- cluster ASVs into OTUs
-- remove ASV with extremely low abundance and sample frequency across samples.
+- Cluster ASVs into OTUs
+- Remove ASV with extremely low abundance and sample frequency across samples.
 
 ### 4. Alpha rarefaction curves
 Rarefaction is a method used both to normalize metabarcoding data, here is used as a preliminary assessment of sampling effort, to see if it was enough to describe the target microbial community diversity
