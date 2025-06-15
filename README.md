@@ -490,6 +490,6 @@ BUILD A REPORT CONTAINING EVERY STEP YOU TOOK, REPORTING THE COMMANDS USED AND T
 #### **FINAL TASK D**
 > 1) Critically Compare the method and the results you obtained with the methods and results from the paper you selected.
 > 
-  - Did you use the same tool/pipeline the authors used to perform the analyses?
-  - Did you get to their same conclusions?/changing the method noticeably/slightly affected the results? 
-  - If that happened what were the main differences?
+> - Did you use the same tool/pipeline the authors used to perform the analyses?
+> - Did you get to their same conclusions?/changing the method noticeably/slightly affected the results? 
+> - If that happened what were the main differences?
