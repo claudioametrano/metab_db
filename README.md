@@ -158,12 +158,12 @@ $ singularity exec --bind "$(pwd)":/in multiqc\:1.26--pyhdfd78af_0 multiqc /in/r
 ```
 #### **TASK2**
 > Now check the .html output of R1 and R2 fastq file from some of the samples (download it from server by Filezilla or any other client) and the aggregated report of MultuQC and try to answer the following questions:
-> 1- Which of the warnings thrown by fasQC are of actual concern, and which are not? Why?
-> 2- Do you notice any difference in term of quality between corresponding R1 and R2 files?
-> 3- Does any sample show peculiar characteristics in term of quality, nucleotide composition, etc?
-> 4- If any, what are the over-represented sequences? Are they of concern for subsequent analyses?
-> 5- Does your sequence contains residual Illumina adapters/sequencing primers and marker's primers?
-> 6- Could you explain why polyG sequences are common? Do they have biological meaning? (hint: look at bottom-right corner of /images/illumina.pdf)
+> - 1 Which of the warnings thrown by fasQC are of actual concern, and which are not? Why?
+> - 2 Do you notice any difference in term of quality between corresponding R1 and R2 files?
+> - 3 Does any sample show peculiar characteristics in term of quality, nucleotide composition, etc?
+> - 4 If any, what are the over-represented sequences? Are they of concern for subsequent analyses?
+> - 5 Does your sequence contains residual Illumina adapters/sequencing primers and marker's primers?
+> - 6 Could you explain why polyG sequences are common? Do they have biological meaning? (hint: look at bottom-right corner of /images/illumina.pdf)
 
 ![[P5_to_P7.png]]
 taken from [this](https://teichlab.github.io/scg_lib_structs/methods_html/Illumina.html) informative website
