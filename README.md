@@ -118,7 +118,7 @@ $ cd metab_metag_db
 ```
 >[!CAUTION]
 >All the command from now ahead are lauched with the relative path starting from the current directory, which is the main folder of this repository
-#### **TASK 1**
+### **TASK 1**
 > - Check on of the fastq file without decompressing them (It would be not convenient, as the software we use can deal with compressed archives)
 > - Count the number of sequences per fastq file
 > - Which kind of reads are these? (type, reads length)
