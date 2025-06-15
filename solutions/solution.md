@@ -48,7 +48,7 @@ if you want only the reads that do not match the pattern of forward primer in R1
 
 **TASK 4**
 Check the 16S primer used!
-Other software are able to use degenerate primer sequences to detect primers. Fastp can detect primer but we would need to create all the possible combination from the degenerate sequence.
+Other software are able to use degenerate primer sequences to detect primers. Fastp can detect primer but we would need to create all the possible combinations from the degenerate sequence.
 
 **TASK 5**
 ```bash 
