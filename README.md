@@ -410,21 +410,23 @@ $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime featu
 #### ...and plot samples composition in term of main taxa
 ```bash
 $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime taxa barplot \
+qiime taxa barplot \
   --i-table results/qiime_artifacts/asv-table_no-singletons.qza \
   --i-taxonomy results/qiime_artifacts/taxonomy.qza \
-  --m-metadata-file data/sample-metadata.csv \
+  --m-metadata-file data/metadata.csv \
   --o-visualization results/qiime_artifacts/taxa-bar-plots.qzv
+
 ```
 ### TASK 7
 Explore the interactive bar-plots, is it anything you would exclude for subsequent prokaryotes diversity analyses?
 
 ## Filter the ASVs table using assigned taxonomy
 ```bash
-$ singularity exec --bind "$(pwd)":/in --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime taxa filter-table \
---i-table /in/results/qiime_artifacts/asv-table_no-singletons.qza \
---i-taxonomy /in/results/qiime_artifacts/taxonomy.qza \
+$ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime taxa filter-table \
+--i-table results/qiime_artifacts/asv-table_no-singletons.qza \
+--i-taxonomy results/qiime_artifacts/taxonomy.qza \
 --p-exclude Mitochondria,Chloroplast \
---o-filtered-table /in/results/qiime_artifacts/asv-table_no-singletons_mito_chl_filtered.qza \
+--o-filtered-table results/qiime_artifacts/asv-table_no-singletons_mito_chl_filtered.qza \
 --verbose
 ```
 
@@ -445,12 +447,13 @@ ASV table -> Distance/similarity index among samples -> distance/similarity matr
 
 As some alpha diversity metrics also include **phylogenetic distance** in their formula, we are now inferring a (not particularly accurate... why?) phylogenetic tree based on the representative sequences of our ASVs
 ```bash
-$ singularity exec --bind "$(pwd)":/in --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime phylogeny align-to-tree-mafft-fasttree \
-  --i-sequences /in/results/qiime_artifacts/rep-seqs.qza \
-  --o-alignment /in/results/qiime_artifacts/aligned-rep-seqs.qza \
-  --o-masked-alignment /in/results/qiime_artifacts/masked-aligned-rep-seqs.qza \
-  --o-tree /in/results/qiime_artifacts/unrooted-tree.qza \
-  --o-rooted-tree /in/results/qiime_artifacts/rooted-tree.qza
+$ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime phylogeny align-to-tree-mafft-fasttree \
+  --i-sequences results/qiime_artifacts/rep-seqs.qza \
+  --o-alignment results/qiime_artifacts/aligned-rep-seqs.qza \
+  --o-masked-alignment results/qiime_artifacts/masked-aligned-rep-seqs.qza \
+  --o-tree results/qiime_artifacts/unrooted-tree.qza \
+  --o-rooted-tree results/qiime_artifacts/rooted-tree.qza \
+  --p-nthreads 4
 
 ```
 
