@@ -13,6 +13,7 @@ zgrep -v "^@A00618:" ./data/16S_biochar_run2_10perc_sampled/Bch-16S-V3V4-001-2_S
 ```
 
 **TASK 2**
+
 1.
 - Per tile variation are normal, and this run is good quality
 -  Per base seq. and GC content cannot be stable and normally distributed (It's a short quite homogenous amplicon, except for hypervariable regions, not a full genome!), maybe worth trying to check shoulder peak from R2.
