@@ -12,6 +12,7 @@ zless ./data/16S_biochar_run2_10perc_sampled/*.gz #find the header
 zgrep -v "^@A00618:" ./data/16S_biochar_run2_10perc_sampled/Bch-16S-V3V4-001-2_S1_L002_R1_001.fastq_10perc.fastq.gz | zgrep -v "^+$" |awk '{print length($1)}'
 ```
 
+
 **TASK 2**
 
 1.
