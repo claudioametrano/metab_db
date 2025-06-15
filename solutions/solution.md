@@ -1,15 +1,15 @@
 **TASK 1** 
 count sequecnes in fastq (many other methods are valid)
 ```bash
-zgrep -c "^+$" ./data/16S_biochar_run2_10perc_sampled/*.gz
+ zgrep -c "^+$" ./data/16S_biochar_run2_1perc/*.gz
 ```
 check seq length:
 - open file page by page without unzipping and find the sequence header
 - grep zipped file getting rid of header and +lines, get sequences length with awk
 ```bash
-zless ./data/16S_biochar_run2_10perc_sampled/*.gz #find the header
+$ zless ./data/16S_biochar_run2_1perc/*.gz #find the header
 
-zgrep -v "^@A00618:" ./data/16S_biochar_run2_10perc_sampled/Bch-16S-V3V4-001-2_S1_L002_R1_001.fastq_10perc.fastq.gz | zgrep -v "^+$" |awk '{print length($1)}'
+$ zgrep -v "^@A00618:" ./data/16S_biochar_run2_1perc/Bch-16S-V3V4-001-2_S1_L002_R1_001.fastq_1perc.fastq.gz | zgrep -v "^+$" |awk '{print length($1)}'
 ```
 
 
@@ -30,21 +30,21 @@ zgrep -v "^@A00618:" ./data/16S_biochar_run2_10perc_sampled/Bch-16S-V3V4-001-2_S
 **TASK 3**
 forward primer search and count with regex
 ```bash
-zgrep --color=auto -B1 -E "CCTACGGG[A|C|G|T][C|G|T|]GCA[C|G]CAG" ./data/16S_biochar_run2_10perc_sampled/*.fastq.gz
+$ zgrep --color=auto -B1 -E "CCTACGGG[A|C|G|T][C|G|T|]GCA[C|G]CAG" ./data/16S_biochar_run2_1perc/*.fastq.gz
 ```
 
 reverse primer search and count with regex
 ```bash
-zgrep --color=auto -B1 -E "GACTAC[A|C|G|T][A|C|G]GGGTATCTAATCC" ./data/16S_biochar_run2_10perc_sampled/*.fastq.gz
+zgrep --color=auto -B1 -E "GACTAC[A|C|G|T][A|C|G]GGGTATCTAATCC" ./data/16S_biochar_run2_1perc/*.fastq.gz
 ```
-if you need to count them drop -B and add -c arguments. 
+if you need to count them drop -B 1 and add -c arguments. 
 Some R1 have the reverse primer and viceversa! (very few, it should be close to zero)
 
 if you want only the reads that do not match the pattern of forward primer in R1, so you can check what is "wrong" with them
 ```bash
- zgrep -A 1 "^@A00618:" ./data/16S_biochar_run2_10perc_sampled/Bch-16S-V3V4-001-2_S1_L002_*R1*.gz | grep -E "^[A|C|G|T|N]" | grep -v -E "CCTACGGG[A|C|G|T][C|G|T|]GCA[C|G]CAG"
+ $ zgrep -A 1 "^@A00618:" ./data/16S_biochar_run2_1perc/Bch-16S-V3V4-011-2_S11_L002_R1_001.fastq_1perc.fastq.gz | grep -E "^[A|C|G|T|N]" | grep -v -E "CCTACGGG[A|C|G|T][C|G|T|]GCA[C|G]CAG"
 ```
- Try the same for R2 (but using a regex of the reverse primer) and see how most of them have some mismatch in the primer sequences (other can be polyG polyA... maybe verify this adding a further pipe like ... | grep "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGG")
+ Try the same for R2 (but using a regex of the reverse primer) and see how most of them have some mismatch in the primer sequences (other can be polyG polyA... you can verify this adding a further pipe like ... | grep "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGG")
 
 **TASK 4**
 Check the 16S primer used!
@@ -54,7 +54,7 @@ Other software are able to use degenerate primer sequences to detect primers. Fa
 ```bash 
 cd ./results/qiime_artifacts
 unzip stats.qza
-nano 5940d30a-9bf8-4538-9749-ec95b2140d62/data/stats.tsv
+less -S nameofthefolder/data/stats.tsv
 cd -
 ```
 
