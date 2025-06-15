@@ -459,31 +459,32 @@ $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime phylo
 
 #### Alpha and beta diversity calculation
 ```bash
-$ singularity exec --bind "$(pwd)":/in --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime diversity core-metrics-phylogenetic \
-  --i-phylogeny /in/results/qiime_artifacts/rooted-tree.qza \
-  --i-table /in/results/qiime_artifacts/asv-table_no-singletons_mito_chl_filtered.qza \
+$ singularity exec  --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime diversity core-metrics-phylogenetic \
+  --i-phylogeny results/qiime_artifacts/rooted-tree.qza \
+  --i-table results/qiime_artifacts/asv-table_no-singletons_mito_chl_filtered.qza \
   --p-sampling-depth xxx \
-  --m-metadata-file /in/data/metadata.csv \
-  --output-dir /in/results/qiime_artifacts/diversity-core-metrics-phylogenetic
+  --m-metadata-file data/metadata.csv \
+  --output-dir results/qiime_artifacts/diversity-core-metrics-phylogenetic
 ```
 Pick a suitable value for `--p-sampling-depth` : what method are you applying to normalize samples? What is the best trade off between sampling depth and samples lost? 
 
 #### Hypotheses testing with alpha diversity
 ```bash 
-$ singularity exec --bind "$(pwd)":/in --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime diversity alpha-group-significance \
-  --i-alpha-diversity /in/results/qiime_artifacts/diversity-core-metrics-phylogenetic/observed_features_vector.qza \
-  --m-metadata-file /in/data/metadata.csv \
-  --o-visualization /in/results/qiime_artifacts/diversity-core-metrics-phylogenetic/observed_features-significance.qzv
+$ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime diversity alpha-group-significance \
+  --i-alpha-diversity results/qiime_artifacts/diversity-core-metrics-phylogenetic/observed_features_vector.qza \
+  --m-metadata-file data/metadata.csv \
+  --o-visualization results/qiime_artifacts/diversity-core-metrics-phylogenetic/observed_features-significance.qzv
 ```
 
 #### ...and beta diversity using PERMANOVA ([Anderson, 2001](https://onlinelibrary.wiley.com/doi/full/10.1111/j.1442-9993.2001.01070.pp.x?casa_token=mATfoFu52gIAAAAA%3AohHkSLIMaycaxS5Sl9OeN5rWtZuTHblTwbzHul1okIExp_8N-9q-elh5DcYGFEBahIFStwKrzssA4ng))
 The following commands will test whether distances between samples within a group, are more similar to each other then they are to samples from the other groups. If you call this command with the `--p-pairwise` parameter, it will also perform pairwise tests that will allow you to determine which specific pairs of groups differ from one another, if any.
 ```bash
+$ singularity exec  --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif \
 qiime diversity beta-group-significance \
-  --i-distance-matrix analysis/diversity_metrics/unweighted_unifrac_distance_matrix.qza \
-  --m-metadata-file metadata.tsv \
-  --m-metadata-column Genotype \
-  --o-visualization analysis/visualisations/unweighted-unifrac-genotype-significance.qzv \
+  --i-distance-matrix results/qiime_artifacts/diversity-core-metrics-phylogenetic/unweighted_unifrac_distance_matrix.qza \
+  --m-metadata-file data/metadata.csv \
+  --m-metadata-column Substrate \
+  --o-visualization results/qiime_artifacts/unweighted-unifrac-genotype-significance.qzv \
   --p-pairwise
 ```
 
