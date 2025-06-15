@@ -426,7 +426,7 @@ Indices automatically calculated by QIIME pipeline
 - **Observed Features** 
 - **Shannon’s diversity index** 
 - **Faith’s Phylogenetic Diversity** (a qualitative measure of community richness that incorporates phylogenetic relationships between the features)
-- **Pielou’s Evenness*
+- **Pielou’s Evenness**
 
 **Beta diversity: a measure of variation in species composition between ecological communities or across spatial or environmental gradients. It quantifies the degree to which communities differ from one another in their species composition.**
 
