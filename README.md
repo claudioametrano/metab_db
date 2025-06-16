@@ -29,7 +29,7 @@ $ git clone https://github.com/claudioametrano/metab_db.git
 
 Rename the folder containing the results, so you won't overwrite it running the analyses of this tutorial, and create a new results folder
 ```bash
-$ cd metab_metag_db
+$ cd metab_db
 $ mv results results_backup  
 $ mkdir results
 ```
