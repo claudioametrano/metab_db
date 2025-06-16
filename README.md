@@ -107,14 +107,14 @@ We are not going to produce our own data, we will instead use a toy version of a
 from [Fukuda et al. 2016](https://www.researchgate.net/publication/308040658_Molecular_Approaches_to_Studying_Microbial_Communities_Targeting_the_16S_Ribosomal_RNA_Gene)
 ### 1. Required data:
 
-- Sequences (fastq) ->  ./data/raw_fatsq/16S_biochar_run2_10perc_sampled
+- Sequences (fastq) ->  data/16S_biochar_run2_1perc/
 - Metadata -> ./data/metadada.csv 
   let's take a look at them to understad the **experimental design**
 - Reference database -> [SILVA](https://www.arb-silva.de)
 
 If you are not already in the repository main directory get there:
 ```bash
-$ cd metab_metag_db
+$ cd metab_db
 ```
 >[!CAUTION]
 >All the command from now ahead are lauched with the relative path starting from the current directory, which is the main folder of this repository
@@ -136,9 +136,9 @@ $ mkdir ./results/fastqc_raw_out
 
 $ singularity pull https://depot.galaxyproject.org/singularity/fastqc:0.12.1--hdfd78af_0
 
-$ singularity shell fastqc:0.12.1--hdfd78af_0https://depot.galaxyproject.org/singularity/fastqc:0.12.1--hdfd78af_0
+$ singularity shell fastqc:0.12.1--hdfd78af_0
  
-$ fastqc /in/data/16S_biochar_run2_1perc/*.gz -o results/fastqc_raw_out --threads 4 --nogroup
+$ fastqc data/16S_biochar_run2_1perc/*.gz -o results/fastqc_raw_out --threads 4 --nogroup
 
 $ exit
 ```
@@ -164,6 +164,17 @@ $ singularity exec multiqc\:1.26--pyhdfd78af_0 multiqc results/fastqc_raw_out/ -
 > - 4. If any, what are the over-represented sequences? Are they of concern for subsequent analyses?
 > - 5. Does your sequence contains residual Illumina adapters/sequencing primers and marker's primers?
 > - 6. Could you explain why polyG sequences are common? Do they have biological meaning? (hint: look at bottom-right corner of /images/illumina.pdf)
+
+ ### **Optional**: explore low CG content reads present in some samples
+```bash
+$ singularity pull https://depot.galaxyproject.org/singularity/biopython:1.79
+$ cp solutions/select_fastq_reads_by_GC_cont.py ./data/16S_biochar_run2_1perc/
+$ gunzip ~/metab_db/data/16S_biochar_run2_1perc/Bch-16S-V3V4-041-2_S1_L002_R2_001.fastq_1perc.fastq.gz 
+$ singularity shell biopython:1.79
+cd data/16S_biochar_run2_1perc/
+$ python3 select_fastq_reads_by_GC_cont.py 
+
+```
 
 ![[P5_to_P7.png]]
 taken from [this](https://teichlab.github.io/scg_lib_structs/methods_html/Illumina.html) informative website
