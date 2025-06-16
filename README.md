@@ -169,11 +169,15 @@ $ singularity exec multiqc\:1.26--pyhdfd78af_0 multiqc results/fastqc_raw_out/ -
 ```bash
 $ singularity pull https://depot.galaxyproject.org/singularity/biopython:1.79
 $ cp solutions/select_fastq_reads_by_GC_cont.py ./data/16S_biochar_run2_1perc/
-$ gunzip ~/metab_db/data/16S_biochar_run2_1perc/Bch-16S-V3V4-041-2_S1_L002_R2_001.fastq_1perc.fastq.gz 
+$ gunzip ~/metab_db/data/16S_biochar_run2_1perc/Bch-16S-V3V4-041-2_S41_L002_R2_001.fastq_1perc.fastq.gz  
 $ singularity shell biopython:1.79
 cd data/16S_biochar_run2_1perc/
-$ python3 select_fastq_reads_by_GC_cont.py 
-
+$ python3 select_fastq_reads_by_GC_cont.py
+$ exit
+BLAST the output file...maybe a tuny bit of it, with "head" command! (44.0_44.0%_GC_Bch-16S-V3V4-041-2_S41_L002_R2_001.fastq_1perc.fastq.fasta)
+rm 43.0_45.0%_GC_Bch-16S-V3V4-041-2_S41_L002_R2_001.fastq_1perc.fastq.fasta select_fastq_reads_by_GC_cont.py
+gzip 16S_biochar_run2_1perc/Bch-16S-V3V4-041-2_S41_L002_R2_001.fastq_1perc.fastq
+cd -
 ```
 
 ![[P5_to_P7.png]]
