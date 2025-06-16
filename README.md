@@ -279,7 +279,8 @@ Obtain and test qiime container
 ```bash
 $ singularity pull docker://quay.io/qiime2/amplicon:2024.10
 
-$ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.1.sif qiime --help
+$ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime --help
+
 
 ```
 qiime tries to create a small cache under /home/qiime2/ so we need to mount also the qiime home folder.
