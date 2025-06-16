@@ -3,7 +3,7 @@
 This repository contains the materials for the "Databases in ecology and comparative genomics course": day 2.
 It deals with the secondary databases developed to barcode diversity using amplicon sequencing (metabarcoding) data.
 
-Github URL: https://github.com/claudioametrano/metab_metag_db
+Github URL: https://github.com/claudioametrano/metab_db.git
 
 ### Software required (on remote server)
 - QIIME2
@@ -24,7 +24,7 @@ $ srun --mem=4G --ntasks=4 --cpus-per-task=1 --time=10:00:00 --pty bash
 
 Download this repository:
 ```bash
-$ git clone https://github.com/claudioametrano/metab_metag_db.git
+$ git clone https://github.com/claudioametrano/metab_db.git
 ```
 
 Rename the folder containing the results, so you won't overwrite it running the analyses of this tutorial, and create a new results folder
