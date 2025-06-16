@@ -426,6 +426,24 @@ $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime featu
   --o-classification results/qiime_artifacts/taxonomy.qza \
   --p-reads-per-batch 100
 ```
+If we fail due RAM constrain we can try another taxonomic assignment approach, for example:
+```bash
+$ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime feature-classifier classify-consensus-vsearch \
+  --i-query            rep-seqs.qza \
+  --i-reference-reads  silva-138-99-seqs.qza \
+  --i-reference-taxonomy silva-138-99-tax.qza \
+  --p-perc-identity    0.97 \
+  --p-query-cov        0.80 \
+  --p-min-consensus    0.80 \
+  --p-maxaccepts       10 \
+  --p-strand           both \
+  --p-top-hits-only    \
+  --p-threads          0 \
+  --o-classification   taxonomy.qza \
+  --o-search-results   vsearch_hits.qza \
+  --verbose
+```
+
 #### ...and plot samples composition in term of main taxa
 ```bash
 $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime taxa barplot \
