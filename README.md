@@ -423,7 +423,8 @@ $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime featu
   --p-n-jobs 4 \
   --i-classifier results/qiime_artifacts/classifier_silva138_99.qza \
   --i-reads results/qiime_artifacts/rep-seqs.qza \
-  --o-classification results/qiime_artifacts/taxonomy.qza
+  --o-classification results/qiime_artifacts/taxonomy.qza \
+  --p-reads-per-batch 100
 ```
 #### ...and plot samples composition in term of main taxa
 ```bash
@@ -502,7 +503,7 @@ qiime diversity beta-group-significance \
   --i-distance-matrix results/qiime_artifacts/diversity-core-metrics-phylogenetic/unweighted_unifrac_distance_matrix.qza \
   --m-metadata-file data/metadata.csv \
   --m-metadata-column Substrate \
-  --o-visualization results/qiime_artifacts/unweighted-unifrac-genotype-significance.qzv \
+  --o-visualization results/qiime_artifacts/unweighted-unifrac-substrate-significance.qzv \
   --p-pairwise
 ```
 
