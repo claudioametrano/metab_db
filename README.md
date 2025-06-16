@@ -180,7 +180,7 @@ gzip 16S_biochar_run2_1perc/Bch-16S-V3V4-041-2_S41_L002_R2_001.fastq_1perc.fastq
 cd -
 ```
 
-![[P5_to_P7.png]]
+![P5_to_P7.png](images/P5_to_P7.png)
 taken from [this](https://teichlab.github.io/scg_lib_structs/methods_html/Illumina.html) informative website
 ### **TASK3** 
 > FastQC do not search for your custom primer (well, not by default) so now it is your turn to do so:
