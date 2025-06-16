@@ -292,13 +292,15 @@ $ singularity shell --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif
 
 # to activate tab-completion
 $ source tab-qiime
+
+$ exit
 ```
 
 ### Import data into QIIME
 ```bash
 $ mkdir ./results/qiime_artifacts/
 
-$ singularity exec --bind "$(pwd)":/in --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime tools import   --type 'SampleData[PairedEndSequencesWithQuality]'   --input-path results/trimmed_fastq/ --input-format CasavaOneEightSingleLanePerSampleDirFmt --output-path results/qiime_artifacts/16S_biochar.qza
+$ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime tools import   --type 'SampleData[PairedEndSequencesWithQuality]'   --input-path results/trimmed_fastq/ --input-format CasavaOneEightSingleLanePerSampleDirFmt --output-path results/qiime_artifacts/16S_biochar.qza
 ```
  
 Something went wrong importing, can you tell why and find a solution to it?
