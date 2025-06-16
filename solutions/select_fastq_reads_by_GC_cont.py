@@ -3,11 +3,11 @@ import os
 from Bio import SeqIO
 
 path = os.getcwd()
-fastq_file = input("Inserire il nome del file fastq da analizzare: ")
-lower_GC = float(input("inserisci il minimo valore % di contenuto di GC delle reads che vuoi copiare nel file di output: "))
-higher_GC = float(input("inserisci il massimo valore % di contenuto di GC delle reads che vuoi copiare nel file di output: "))
-file_format = input("In che formato desideri l'output? fasta/fastq")
-print("le seguenti sequenze hanno la percentuale di GC selezionata:")
+fastq_file = input("input fastq name: ")
+lower_GC = float(input("min  GC %: "))
+higher_GC = float(input("max GC %: "))
+file_format = input("l'output format? fasta/fastq ")
+print("these sequences have the requested GC %:")
 for record in SeqIO.parse(fastq_file, "fastq"):
 #SeqInputOutput.parse legge i dati del fastq (con "fastq" specifichi in che formato è il file con le sequenze)
 	#print(record)
@@ -17,6 +17,7 @@ for record in SeqIO.parse(fastq_file, "fastq"):
 	countT = 0
 	countG = 0
 	countC = 0
+	countN = 0
 	for nucleotide in split_a:
 		if nucleotide == "A":
 			countA = countA +1
@@ -26,7 +27,9 @@ for record in SeqIO.parse(fastq_file, "fastq"):
 			countG = countG + 1 
 		elif nucleotide == "C":
 			countC = countC + 1
-	GC_percentage = ((countC + countG) / (countA + countT + countC + countG))*100	
+		elif nucleotide == "N":
+			countN =countN + 1
+	GC_percentage = ((countC + countG) / (countA + countT + countC + countG + countN))*100	
 	if GC_percentage  >= lower_GC and GC_percentage <= higher_GC:
 		print(record.seq)
 		print(GC_percentage)
