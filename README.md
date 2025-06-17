@@ -447,7 +447,6 @@ $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime featu
 #### ...and plot samples composition in term of main taxa
 ```bash
 $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime taxa barplot \
-qiime taxa barplot \
   --i-table results/qiime_artifacts/asv-table_no-singletons.qza \
   --i-taxonomy results/qiime_artifacts/taxonomy.qza \
   --m-metadata-file data/metadata.csv \
@@ -490,7 +489,7 @@ $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime phylo
   --o-masked-alignment results/qiime_artifacts/masked-aligned-rep-seqs.qza \
   --o-tree results/qiime_artifacts/unrooted-tree.qza \
   --o-rooted-tree results/qiime_artifacts/rooted-tree.qza \
-  --p-nthreads 4
+  --p-n-threads 4
 
 ```
 
