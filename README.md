@@ -27,7 +27,7 @@ Download this repository:
 $ git clone https://github.com/claudioametrano/metab_db.git
 ```
 
-Rename the folder containing the results, so you won't overwrite it running the analyses of this tutorial, and create a new results folder
+Rename the folder containing the results as backup (if any), so you won't overwrite it running the analyses of this tutorial, and create a new results folder
 ```bash
 $ cd metab_db
 $ mv results results_backup  
@@ -165,18 +165,28 @@ $ singularity exec multiqc\:1.26--pyhdfd78af_0 multiqc results/fastqc_raw_out/ -
 > - 5. Does your sequence contains residual Illumina adapters/sequencing primers and marker's primers?
 > - 6. Could you explain why polyG sequences are common? Do they have biological meaning? (hint: look at bottom-right corner of /images/illumina.pdf)
 
- ### **Optional**: explore low CG content reads present in some samples
+ ### **Optional**: explore low CG content reads peak (see fastQC and MultiQC report) present in some samples
 ```bash
 $ singularity pull https://depot.galaxyproject.org/singularity/biopython:1.79
+
+# Copy the script to select reads by CG content into the folder
 $ cp solutions/select_fastq_reads_by_GC_cont.py ./data/16S_biochar_run2_1perc/
+
+# Unzip a fastq file presenting this
 $ gunzip ~/metab_db/data/16S_biochar_run2_1perc/Bch-16S-V3V4-041-2_S41_L002_R2_001.fastq_1perc.fastq.gz  
 $ singularity shell biopython:1.79
 cd data/16S_biochar_run2_1perc/
+
+# Run the script that selects reads by GC content, and output them in fasta
 $ python3 select_fastq_reads_by_GC_cont.py
 $ exit
-BLAST the output file...maybe a tuny bit of it, with "head" command! (44.0_44.0%_GC_Bch-16S-V3V4-041-2_S41_L002_R2_001.fastq_1perc.fastq.fasta)
+
+BLAST the output file, maybe just a tiny bit of it, with "head" command!
+
+# Remove the output file and re-compress the fastq file (or QIIME will throw an error)
 rm 43.0_45.0%_GC_Bch-16S-V3V4-041-2_S41_L002_R2_001.fastq_1perc.fastq.fasta select_fastq_reads_by_GC_cont.py
 gzip 16S_biochar_run2_1perc/Bch-16S-V3V4-041-2_S41_L002_R2_001.fastq_1perc.fastq
+
 cd -
 ```
 
@@ -258,6 +268,7 @@ $ exit
 > Search in the fastp manual what are the options **-trim_front1 17  -trim_front2 21**
 > and try to guess why those numbers were picked? 
 > Can you also propose a more refined solution to solve the same issue?  
+
 #### 2.3 Trimmed reads quality 
 Run again fastQC and MultiQC (in a different output folder!!) and check what happened.
 ```bash
@@ -286,7 +297,7 @@ $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime --hel
 qiime tries to create a small cache under /home/qiime2/ so we need to mount also the qiime home folder.
 
 ***NOTE***
-> you can choose to run the qiime command using its containerized version either interactively, using `singularity shell` or not, using `singularity exec`. If you decide to run it interactively you can activate tab-completion. See the box below:  
+> you can choose to run the qiime command using its containerized version either interactively, using `singularity shell` or not, using `singularity exec`. > If you decide to run it interactively you can activate tab-completion. See the box below:  
 ```bash
 $ singularity shell --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif
 
@@ -333,8 +344,8 @@ This command will produce two outputs which are the fundamental pieces of any ma
 - a fasta containing the representative sequence of each of the detected ASV/OTU
 A report showing the step to get the ASV with DADA (Divisive Amplicon Denoising Algorithm) denoising method.
 ### TASK 5
->Find your way of visualizing the stat.qza content without using Qiime embedded visualizations
->hint: Qiime .qza files are simply (zip) compressed archives
+> Find your way of visualizing the stat.qza content without using Qiime embedded visualizations
+> hint: Qiime .qza files are simply (zip) compressed archives
 
 ### Visualization of ASV table and representative sequences
 Qiime is a user friendly platform which integrates visualization and diversity/ecology analyses, let's take a look at them
@@ -377,7 +388,6 @@ $ singularity exec  --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime feat
   --p-min-frequency 2 \
   --o-filtered-table results/qiime_artifacts/asv-table_no-singletons.qza
 ```
-
 
 ### 4. Alpha rarefaction curves
 Rarefaction is a method used both to normalize metabarcoding data, here is used as a preliminary assessment of sampling effort, to see if it was enough to describe the target microbial community diversity
