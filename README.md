@@ -57,6 +57,7 @@ Since the introduction of the **high throughput sequencing technologies** in the
 | **16S/18S, 23S/28S rRNA**         | Bacteria, Archaea and Eukarya    | **SILVA**                          | [silva](https://www.arb-silva.de/)                                            |
 | **16S rRNA**                      | Bacteria, Archaea                | **Greengenes**                     | https://www.nature.com/articles/s41587-023-01845-1                            |
 
+
 These databases have usually a very simple structure, they are made by one or two files, containing:
 - Reference sequences (usually in .fasta format)
 - A taxonomy file with the taxonomy associated to each of the representative sequences
@@ -73,6 +74,7 @@ After about two decades of metabarcoding there are plenty of tools and pipelines
 | **Anacapa Toolkit** | Conda/R + Snakemake                          | Multi-locus (COI, 12S, 18S) with custom reference building                 | [GitHub](https://github.com/limey-bean/Anacapa)                                                                                      |
 | **MetaWorks**       | Snakemake workflow (Python/R)                | Multi-locus (ITS, COI) with VSEARCH + tax-assign                           | [GitHub](https://github.com/terrimporter/MetaWorks?utm_source=chatgpt.com "MetaWorks: A Multi-Marker Metabarcode Pipeline - GitHub") |
 | **mBRAVE**          | Web cloud platform                           | OTU/ASV assignment against curated BOLD                                    | [mbrave.net](https://www.mbrave.net/?utm_source=chatgpt.com "mBRAVE - Metabarcoding at Scale")                                       |
+
 
 ### A typical metabarcoding experiment workflow
 ![metabarcoding](/images/metabarcoding_workflow.jpg)
