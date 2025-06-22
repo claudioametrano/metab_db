@@ -545,8 +545,8 @@ qiime diversity beta-group-significance \
   --p-pairwise
 ```
 
-### FINAL TASKS
-BUILD A REPORT CONTAINING EVERY STEP YOU TOOK, REPORTING THE COMMANDS USED AND THEIR OUTPUT (meaningful examples or summary tables are enough if the output is large!). THE REPORT IS DUE THE LATEST **ON JULY 4th**, IT CAN BE DELIVERED IN .docx, .pdf, OR MARKDOWN TEXT FILE.#### 
+### FINAL TASK
+**BUILD A REPORT CONTAINING EVERY STEP YOU TOOK, REPORTING THE COMMANDS USED AND THEIR OUTPUT (meaningful examples or summary tables are enough if the output is large!). THE REPORT IS DUE THE LATEST **ON JULY 4th**, IT CAN BE DELIVERED IN .docx, .pdf, OR MARKDOWN TEXT FILE.** 
 
 > 1) Pick a metabarcoding study from literature, with the following characteristics:
 > - A reasonable amount of samples (metabarcoding surveys can be huge, even though per single sample data are usually quite manageable -> short reads amplicon sequencing).
@@ -557,8 +557,8 @@ BUILD A REPORT CONTAINING EVERY STEP YOU TOOK, REPORTING THE COMMANDS USED AND T
 > - It can be from whatever matrix, you have maximum freedom to select something which intrigues you.
 > Some examples: Human gut/oral/skin/... microbiota,  eDNA from water, air (yes, aerobiology does exists), soil, aerosol, plant, fungal, animal microbiota, honey, etc. 
 > 2) Identifiy the aim of the study.
-> 3) Reproduce the main basic steps of a metabarcoding analysis following the main step we performed earlier (alpha diversity, ordination. etc).
-> 4) Critically Compare the method and the results you obtained with the methods and results from the paper you selected (they do not need to be exactly the same):
-> - Did you use the same tool/pipeline the authors used to perform the analyses? List methods and highlight differencies explaining your chioice (e.g for sequence data filtering/trimming, OTU clustering or ASV, similarity thresholds applied, data normalization method, alpha and beta diversity methods applied, statistics to test hypotheses using metadata).
-> - Did you get to their same conclusions? Describe the results, and how data were suitable to verify the hypotheses of the study. 
+> 3) Reproduce the main basic steps of a metabarcoding analysis following the main step we performed (from raw sequences, to diversity analyses and hypotheses testing using metadata).
+> 4) Critically Compare the method and the results you obtained with the methods and results from the paper you selected (they do not need to be exactly the same, as you are restricted to QIIME):
+> - Did you use the same tool/pipeline the authors used to perform the analyses? List methods and highlight differencies explaining your chioice (e.g for sequence data filtering/trimming, OTU clustering or ASV, similarity thresholds applied, data normalization method, alpha and beta diversity methods applied, statistics).
+> - Could you get to their same conclusions? Describe the results, and how data were suitable to verify the hypotheses of the study. 
 > - Did the change of method noticeably affect the results? If that happened what were the main differences?
