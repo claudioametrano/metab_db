@@ -1,8 +1,8 @@
 
 # DNA Metabarcoding
-This repository contains the materials for the "GENOMIC METHODS IN EVOLUTIONARY
-BIOLOGY AND ECOLOGY: Metabarcoding".
-It deals with the methods to barcode diversity using amplicon sequencing (metabarcoding) using a case study.
+This repository contains the materials for the Metabarcoding day of the course "GENOMIC METHODS IN EVOLUTIONARY
+BIOLOGY AND ECOLOGY".
+It deals with the methods to barcode diversity using amplicon sequencing (metabarcoding) with the help of a case study.
 
 Github URL: https://github.com/claudioametrano/metab_db.git
 
