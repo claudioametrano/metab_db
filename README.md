@@ -1,7 +1,8 @@
 
-# Metabarcoding  databases: taxonomic assignment and ecological metadata
-This repository contains the materials for the "Databases in ecology and comparative genomics course": day 2.
-It deals with the secondary databases developed to barcode diversity using amplicon sequencing (metabarcoding) data.
+# DNA Metabarcoding
+This repository contains the materials for the "GENOMIC METHODS IN EVOLUTIONARY
+BIOLOGY AND ECOLOGY: Metabarcoding".
+It deals with the methods to barcode diversity using amplicon sequencing (metabarcoding) using a case study.
 
 Github URL: https://github.com/claudioametrano/metab_db.git
 
@@ -12,14 +13,14 @@ Github URL: https://github.com/claudioametrano/metab_db.git
 - MultiQC
 ### Software required (locally)
 - a fasta file reader (MEGA, Aliview, Jalview, Bioedit ...)
-- Terminal (Linux and Mac) or Mobaxterm (Win) to ssh into the remote server and a client (e.g. Filezilla) for easy file transfer
+- Terminal (Linux and Mac) or Mobaxterm (Win) toconnect to the remote server via SSH and a client (e.g. Mobaxterm, Filezilla) for easier file transfer
 
 ### BEFORE WE START
 Login to your account on the HPC remote server and start an interactive session 
 ```bash
 $ ssh username@l2.gsc1.uni-graz.at
 
-$ srun --mem=4G --ntasks=4 --cpus-per-task=1 --time=10:00:00 --pty bash
+$ srun --mem=16G --ntasks=8 --cpus-per-task=1 --time=10:00:00 --pty bash
 ```
 
 Download this repository:
@@ -50,7 +51,7 @@ Since the introduction of the **high throughput sequencing technologies** in the
 | Marker                            | Taxa Focus                       | Database                           | Link / Notes                                                                  |
 | --------------------------------- | -------------------------------- | ---------------------------------- | ----------------------------------------------------------------------------- |
 | **COI (rbcL, matk, ITS, 18S)**    | Animals (plants, fungi)          | **BOLD**: Barcode Of Life Database | [bold](https://www.boldsystems.org/)                                          |
-| **COI** (additional mito markers) | Amimals (and other eukaryotes)   | **MIDORI**                         | [midori2](https://www.reference-midori.info)                                  |
+| **COI** (additional mito markers) | Animals (and other eukaryotes)   | **MIDORI**                         | [midori2](https://www.reference-midori.info)                                  |
 | **ITS**                           | Fungi (plants, other eukaryotes) | **UNITE**                          | [unite](https://unite.ut.ee/)                                                 |
 | **ITS**                           | plants                           | **PLANiTS**                        | https://academic.oup.com/database/article/doi/10.1093/database/baz155/5722079 |
 | **18S rRNA, full rDNA**           | Eukaryotes                       | **PR2**                            | [pr2](https://pr2-database.org/)                                              |
@@ -60,7 +61,7 @@ Since the introduction of the **high throughput sequencing technologies** in the
 
 These databases have usually a very simple structure, they are made by one or two files, containing:
 - Reference sequences (usually in .fasta format)
-- A taxonomy file with the taxonomy associated to each of the representative sequences
+- A taxonomy file with the taxonomy associated to each of the representative sequence
 
 ### Tools and pipelines commonly used in metabarcoding
 After about two decades of metabarcoding there are plenty of tools and pipelines which were developed to analyze metabarcoding data, many of them composed by the same fundamental steps, also often sharing methods and piece of software (e.g. QIIME using DADA2 denoising algorithm)
