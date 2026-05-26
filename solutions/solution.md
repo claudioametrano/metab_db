@@ -1,39 +1,45 @@
-**TASK 1** 
+**TASK 1**
+look into gzipped fastq files
+```bash
+zgrep -c "^+$" ./data/16S_biochar_run2_1perc/*.gz | head
+```
 count sequecnes in fastq (many other methods are valid)
 ```bash
  zgrep -c "^+$" ./data/16S_biochar_run2_1perc/*.gz
 ```
-check seq length:
-- open file page by page without unzipping and find the sequence header
-- grep zipped file getting rid of header and +lines, get sequences length with awk
+check sequences length, also compute frequencies, for each lenght:
 ```bash
-$ zless ./data/16S_biochar_run2_1perc/*.gz #find the header
+# only prints lenght
+$ zcat data/16S_biochar_run2_1perc/*.fastq.gz | awk 'NR%4==2 {print length($0)}'
 
-$ zgrep -v "^@A00618:" ./data/16S_biochar_run2_1perc/Bch-16S-V3V4-001-2_S1_L002_R1_001.fastq_1perc.fastq.gz | zgrep -v "^+$" |awk '{print length($1)}'
+# also count frequencies and sorts by length
+$ zcat data/16S_biochar_run2_1perc/*.fastq.gz | awk 'NR%4==2 {freq[length($0)]++} END {for (len in freq) print len, freq[len]}' | sort -k1,1n
 ```
 
 
 **TASK 2**
 
 - 1.
-- Per tile variation are normal, and this run is good quality
--  Per base seq. and GC content cannot be stable and normally distributed (It's a short quite homogenous amplicon, except for hypervariable regions, not a full genome!), maybe worth trying to check shoulder peak from R2.
-- Seq. length distribution is totallly fine
+- Per tile variation are normal, and this run is of good quality
+-  Per base seq. and GC content cannot be normally distributed (It's a short quite homogenous amplicon, except for hypervariable regions, not a full genome!), maybe worth trying to check shoulder peak from R2.
+- Seq. length distribution is totally fine
 - Duplication and overrepresented sequecneare normal for amplicons (and the redundancy is also amplified by PCR cycles). Also overrepresented sequecnes are showing up where the primers were designed, which need to be not variable region of the locus (otherwise primers would not work).
-- If curious to know what peak shoulder in R2 could be, unzip some R2 samples in a new folder, put the script /solutions/select_fastq_reads_by_GC_cont.py in the same folder and run it, BLAST the ouptut file (or part of it).  
-- 2. Not as relevant as would be for older Illumina machines, such as the still commonly used Miseq. These are Novaseq reads, sometimes R1 is slighlty worse than R2, both of them slightly worse at the end, R2 in a liltte more visible way.
+- If curious to know what peak shoulder in R2 could be, unzip some R2 samples in a new folder, put the script /solutions/select_fastq_reads_by_GC_cont.py in the same folder and run it, BLAST the ouptut file (or part of it). Biopython required.
+
+
+- 2. Not as relevant as would be for older Illumina machines, such as the still commonly used Miseq. These are Novaseq reads, both of them slightly worse at the end, R2 in a liltte more visible way.
 - 3. Check out sample 25 with a portion of the reads a bit problematic, the rest is really high quality.
 - 4. They clearly start with primer sites, so nothing strange for amplion sequencing (if unsure BLAST some)
 - 5. Illumina adapterd seem absent from FastQC report, but primer are clearly there (see overrepresented sequences, or try yourself a grep)
 - 6. Reads from Illumina Novaseq6000 are analysed with a 2 color channels chemistry, so all no signal reads are read as G 
 
 **TASK 3**
-forward primer search and count with regex
+forward primer search
 ```bash
 $ zgrep --color=auto -B1 -E "CCTACGGG[A|C|G|T][C|G|T|]GCA[C|G]CAG" ./data/16S_biochar_run2_1perc/*.fastq.gz
 ```
 
-reverse primer search and count with regex
+reverse primer search
 ```bash
 zgrep --color=auto -B1 -E "GACTAC[A|C|G|T][A|C|G]GGGTATCTAATCC" ./data/16S_biochar_run2_1perc/*.fastq.gz
 ```
@@ -44,7 +50,7 @@ if you want only the reads that do not match the pattern of forward primer in R1
 ```bash
  $ zgrep -A 1 "^@A00618:" ./data/16S_biochar_run2_1perc/Bch-16S-V3V4-011-2_S11_L002_R1_001.fastq_1perc.fastq.gz | grep -E "^[A|C|G|T|N]" | grep -v -E "CCTACGGG[A|C|G|T][C|G|T|]GCA[C|G]CAG"
 ```
- Try the same for R2 (but using a regex of the reverse primer) and see how most of them have some mismatch in the primer sequences (other can be polyG polyA... you can verify this adding a further pipe like ... | grep "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGG")
+ Try the same for R2 (but using a regex of the reverse primer) and see how most of them have some mismatch in the primer sequences (other can be polyG polyA... you can verify this adding a further pipe like ... | grep "GGGGGGGGGG")
 
 **TASK 4**
 Check the 16S primer used!
@@ -52,14 +58,25 @@ Other software are able to use degenerate primer sequences to detect primers. Fa
 
 **TASK 5**
 ```bash 
-cd ./results/qiime_artifacts
-unzip stats.qza
-less -S nameofthefolder/data/stats.tsv
+$ ls results/qiime_artifacts
+# unzip will not recognize the .qza extension and will not autocomplete
+$ unzip results/qiime_artifacts/stats.qza -d results/qiime_artifacts/
+#OR
+$ 7z x results/qiime_artifacts/stats.qza -o results/qiime_artifacts/
+
+less -S results/qiime_artifacts/nameofthefolder/data/stats.tsv
 cd -
 ```
 
 **TASK 6**
-Resampling for rarefaction cannot be higher than the total frequency (8000 would work here) of the highest frequency in samples. Also too low would not show well enough how all the samples behave at increased sampling effort. 
+Resampling for rarefaction cannot be higher than the total frequency (something like 6900 would work here) of the highest frequency in samples. Also too low would not show well enough how all the samples behave at increased sampling effort. --p-steps are the number of resampling to be performed, the higher the more points the rarefaction curves will have.
 
 **TASK 7**
 Chloroplasts and mithochondria ancestors were free living prokaryotes and they have their own 16S rDNA with is captured with universal bacterial 16S primers (also, they can be abundant in marine water samples)
+
+**TASK 8**
+Neither the Subtrate  not the Location seem to correlate with the ordination of samples. The two time points instead clearly differ in term of prokaryotic communities.
+The aim of the study was actually understanding if different charcoal % in the concrete  (C: control; B 5%; BB 10% charcoal) would influence prokaryotic (and eukaryotic) communities colonizing the docks.   
+
+**TASK 9**
+For example using eveness instead of observed ASVs, the difference in alpha diversity become significant for the two time point. This is in accordance with the fact that t1 is an early stage of colonization, while t2 is a more mature, less dominated community.

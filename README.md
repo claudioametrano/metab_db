@@ -15,25 +15,6 @@ Github URL: https://github.com/claudioametrano/metab_db.git
 - a fasta file reader (MEGA, Aliview, Jalview, Bioedit ...)
 - Terminal (Linux and Mac) or Mobaxterm (Win) toconnect to the remote server via SSH and a client (e.g. Mobaxterm, Filezilla) for easier file transfer
 
-### BEFORE WE START
-Login to your account on the HPC remote server and start an interactive session 
-```bash
-$ ssh username@l2.gsc1.uni-graz.at
-
-$ srun --mem=16G --ntasks=8 --cpus-per-task=1 --time=10:00:00 --pty bash
-```
-
-Download this repository:
-```bash
-$ git clone https://github.com/claudioametrano/metab_db.git
-```
-
-Rename the folder containing the results as backup (if any), so you won't overwrite it running the analyses of this tutorial, and create a new results folder
-```bash
-$ cd metab_db
-$ mv results results_backup  
-$ mkdir results
-```
 
 ## Introduction
 
@@ -85,7 +66,7 @@ modif. from [Pawlowsky et al. 2018](https://www.sciencedirect.com/science/articl
 #### Phase 1: Experimental design
 - Question to answer using amplicon sequencing data
 - Actual design: How many samples/replicates? How many markers/which organims target? How many libraries? What expected sequencing depth? How large is the budget?
-- Metadata: by direct measurments? from public databases (especially for environmental dataset)? 
+- Metadata: by direct measurments? from public databases?
 
 #### Phase 2: Library preparation
 ![wetlab](/images/illumina.png)
@@ -107,10 +88,30 @@ This is an overview from [QIIME2](https://amplicon-docs.qiime2.org/en/latest/exp
 ***NOTE bis***
 > After the overview of the method, do you think metabarcoding is a quantitative method? Does it model accurately the abundance of the original meta-genomic DNA extracted from environmental matrices (e.g. soil, water, ...) 
 
+### BEFORE WE START
+Login to your account on the HPC remote server and start an interactive session 
+```bash
+$ ssh username@l2.gsc1.uni-graz.at
+
+$ srun --mem=16G --ntasks=8 --cpus-per-task=1 --time=10:00:00 --pty bash
+```
+
+Download this repository:
+```bash
+$ git clone https://github.com/claudioametrano/metab_db.git
+```
+
+Create the results folder
+```bash
+$ cd metab_db  
+$ mkdir results
+```
 ## Case study: welcome to the Trieste coast, a "toy" 16S dataset 
 
 ![miramare](/images/miramare.png)
-We are not going to produce our own data, we will instead use a toy version of an actual experiment. The data were subsampled (1%) from the Illumina sequencing of a 16S rDNA library, produced to assess the prokaryotic diversity in a coastal environment, in different experimental conditions.
+![map](/images/trieste_coast.png)
+
+We are not going to produce our own data, we will instead use a toy version of an actual experiment. The data were subsampled (1%) from the Illumina sequencing of a 16S rDNA library, produced to assess the prokaryotic diversity in a coastal environment, in different experimental conditions and sites.  [biochar paper here](https://www.sciencedirect.com/science/article/pii/S0301479725034942)
 
 ![16S](/images/16S_rDNA.png)
 
@@ -124,16 +125,16 @@ from [Fukuda et al. 2016](https://www.researchgate.net/publication/308040658_Mol
   let's take a look at them to understad the **experimental design**
 - Reference database -> [SILVA](https://www.arb-silva.de)
 
-If you are not already in the repository main directory get there:
+If you are not already in the repository main directory go there:
 ```bash
 $ cd metab_db
 ```
 >[!CAUTION]
 >All the command from now ahead are lauched with the relative path starting from the current directory, which is the main folder of this repository
 ### **TASK 1**
-> - Check on of the fastq file without decompressing them (It would be not convenient, as the software we use can deal with compressed archives)
-> - Count the number of sequences per fastq file
-> - Which kind of reads are these? (type, reads length)
+> - Check the sequence data file without decompressing them, which kind of data is this? 
+> - Count the number of sequences per file
+> - How long are the reads?
 >    (hint: use zless or zcat, zgrep and awk with length)
 
 ### 2. Reads QC and trimming
@@ -157,7 +158,7 @@ $ exit
 
 The same command can be launched in the container without necessary remaining in an interactive session:
 ```bash
-$ singularity exec fastqc\:0.12.1--hdfd78af_0 fastqc data/16S_biochar_run2_1perc/*.gz -o results/fastqc_raw_out --threads 4 --nogroup
+$ singularity exec fastqc\:0.12.1--hdfd78af_0 fastqc data/16S_biochar_run2_1perc/*.gz -o results/fastqc_raw_out --threads 8 --nogroup
 ```
 
 MultiQC aggregates results to highlight possible outliers
@@ -175,32 +176,25 @@ $ singularity exec multiqc\:1.26--pyhdfd78af_0 multiqc results/fastqc_raw_out/ -
 > - 3. Does any sample show peculiar characteristics in term of quality, nucleotide composition, etc?
 > - 4. If any, what are the over-represented sequences? Are they of concern for subsequent analyses?
 > - 5. Does your sequence contains residual Illumina adapters/sequencing primers and marker's primers?
-> - 6. Could you explain why polyG sequences are common? Do they have biological meaning? (hint: look at bottom-right corner of /images/illumina.pdf)
+> - 6. Could you explain why polyG sequences are common? Do they have biological meaning? (hint: look at bottom-right corner of the Library Preparation figure)
 
 ### **Optional**: explore low CG content reads peak (see fastQC and MultiQC report) present in some samples
 ```bash
+$ mkdir results/GC_extreme
+# Copy the script to select reads by CG content and one relevant fastq into the folder
+$ cp data/16S_biochar_run2_1perc/*S41*R2* results/GC_extreme/
+$ gunzip results/GC_extreme/Bch-16S-V3V4-041-2_S41_L002_R2_001.fastq_1perc.fastq.gz
+$ cp solutions/select_fastq_reads_by_GC_cont.py results/GC_extreme/
+# The script we are goinmg to use requires BioPython
 $ singularity pull https://depot.galaxyproject.org/singularity/biopython:1.79
-
-# Copy the script to select reads by CG content into the folder
-$ cp solutions/select_fastq_reads_by_GC_cont.py ./data/16S_biochar_run2_1perc/
-
-# Unzip a fastq file presenting this
-$ gunzip ~/metab_db/data/16S_biochar_run2_1perc/Bch-16S-V3V4-041-2_S41_L002_R2_001.fastq_1perc.fastq.gz  
-$ singularity shell biopython:1.79
-cd data/16S_biochar_run2_1perc/
-
+$ singularity shell biopython\:1.79
+$ cd results/GC_extreme/
 # Run the script that selects reads by GC content, and output them in fasta
-$ python3 select_fastq_reads_by_GC_cont.py
+$ python select_fastq_reads_by_GC_cont.py 
+# select file name and GC content range and BLAST some of the results
 $ exit
-
-BLAST the output file, maybe just a tiny bit of it, with "head" command!
-
-# Remove the output file and re-compress the fastq file (or QIIME will throw an error)
-rm 43.0_45.0%_GC_Bch-16S-V3V4-041-2_S41_L002_R2_001.fastq_1perc.fastq.fasta select_fastq_reads_by_GC_cont.py
-gzip 16S_biochar_run2_1perc/Bch-16S-V3V4-041-2_S41_L002_R2_001.fastq_1perc.fastq
-
-cd -
 ```
+
 
 ![P5_to_P7.png](images/P5_to_P7.png)
 taken from [this](https://teichlab.github.io/scg_lib_structs/methods_html/Illumina.html) informative website
@@ -265,7 +259,7 @@ for r1 in "$IN_DIR"/*_R1_001.fastq_1perc.fastq.gz; do
         --cut_mean_quality 30 \
         --qualified_quality_phred 30 \
         --length_required 200 \
-        --thread 4 \
+        --thread 8 \
         --html "${OUT_REPORT}/${sample}.html" \
         --json "${OUT_REPORT}/${sample}.json" \
     echo "Done with $sample"
@@ -286,7 +280,7 @@ Run again fastQC and MultiQC (in a different output folder!!) and check what hap
 ```bash
 $ mkdir ./results/fastqc_trimmed_out
 
-$ singularity exec  fastqc\:0.12.1--hdfd78af_0 fastqc results/trimmed_fastq/*.gz -o results/fastqc_trimmed_out --threads 4 --nogroup
+$ singularity exec  fastqc\:0.12.1--hdfd78af_0 fastqc results/trimmed_fastq/*.gz -o results/fastqc_trimmed_out --threads 8 --nogroup
 ```
 
 ```bash
@@ -339,9 +333,10 @@ Now go back to QIIME container and re-try importing your fastq files, it should 
 GOOD, CONGRATS! ... you imported your first dataset into QIIME
 
 ### 3. Denoising and AVS table 
+This step is quite slow even with only 10000 read as training set for DADA2 (~ 10 mins with 8 threads of AMD EPYC 9825):hourglass: ... :coffe: break?
 ```bash
 $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime dada2 denoise-paired \
-  --p-n-threads 4\
+  --p-n-threads 8\
   --p-trunc-len-f 0 \
   --p-trunc-len-r 0 \
   --i-demultiplexed-seqs results/qiime_artifacts/16S_biochar.qza \
@@ -358,6 +353,7 @@ A report showing the step to get the ASV with DADA (Divisive Amplicon Denoising 
 ### TASK 5
 > Find your way of visualizing the stat.qza content without using Qiime embedded visualizations
 > hint: Qiime .qza files are simply (zip) compressed archives
+> What do you notice being the step mostly influencing the number of surviving sequences? Can you guess why?
 
 ### Visualization of ASV table and representative sequences
 Qiime is a user friendly platform which integrates visualization and diversity/ecology analyses, let's take a look at them
@@ -393,26 +389,28 @@ Possible strategy to limit this data issue:
 - Cluster ASVs into OTUs
 - Remove ASV with extremely low abundance and sample frequency across samples.
 
-#### Remove singletons
+#### Remove extremely rare ASVs 
+...which are more prone to be sequencing errors. It also diminishes the final matrix sparsity
 ```bash
 $ singularity exec  --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime feature-table filter-features \
-  --i-table results/qiime_artifacts/asv-table.qza \
-  --p-min-frequency 2 \
-  --o-filtered-table results/qiime_artifacts/asv-table_no-singletons.qza
+--i-table results/qiime_artifacts/asv-table.qza \
+--p-min-frequency 10 \
+--p-min-samples   2 \
+--o-filtered-table results/qiime_artifacts/asv-table_norare.qza
 ```
 
 ### 4. Alpha rarefaction curves
 Rarefaction is a method used both to normalize metabarcoding data, here is used as a preliminary assessment of sampling effort, to see if it was enough to describe the target microbial community diversity
 ```bash
 $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime diversity alpha-rarefaction \
---i-table ./results/qiime_artifacts/asv-table_no-singletons.qza \
+--i-table ./results/qiime_artifacts/asv-table_norare.qza \
 --p-max-depth xxx \
 --p-steps xxx \
 --m-metadata-file ./data/metadata.csv \
 --o-visualization ./results/qiime_artifacts/alpha-rarefaction.qzv	
 ```
 ### TASK6 
-> On the basis of the previous reports, select suitable resampling depth and step values for the rarefaction analysis (hint: search in `--help` of the `diversity alpha-rarefaction` command)
+> Select suitable resampling depth and step values for the rarefaction analysis (hint: search in `--help` of the `diversity alpha-rarefaction` command)
 
 Visualize the results in QIIME view
 
@@ -422,33 +420,47 @@ Finally we are getting to the part where the ecological meaning of our data can 
 #### Obtain the reference database
 Let's download the latest version of SILVA 99% similarity clustered version, pre-formatted for QIIME, if you are curious take a look inside (they are just regular zipfiles) to see how the taxonomy format looks like
 ```bash 
-$ cd results
+$ cd results/qiime_artifacts
 
 $ wget https://data.qiime2.org/2023.2/common/silva-138-99-seqs.qza
 $ wget https://data.qiime2.org/2023.2/common/silva-138-99-tax.qza
-$ cd ..
+$ cd ../..
 ```
-
+#### Resize the database to V3-V4 region only, based on primer system used
+We are going to use our database with a method base on k-mer composition, therefore is beneficial to retain only the 16S region (V3-V4) amplified by our primers. If using an alignment method, shorter reference database will improve speed and resource use. 
+This will take quite long (~30 mins on 70 thread of AMD EPYC 9825 CPU) :hourglass: 
+```bash
+$ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif   qiime feature-classifier extract-reads \
+--i-sequences results/qiime_artifacts/silva-138-99-seqs.qza \
+--p-f-primer CCTACGGGNBGCASCAG \
+--p-r-primer GACTACNVGGGTATCTAATCC \
+--p-read-orientation both \
+--p-identity 0.80 \
+--p-n-jobs 8 \
+--o-reads results/qiime_artifacts/silva-138-99-v3v4-seqs.qza \
+--verbose
+```
 #### Train a classifier
 Since reference sequences and the relative taxonomy are already imported in QIIME format we can train an object whose purpose is to assign taxonomy to our ASVs: [Naive Bayes classifier](https://scikit-learn.org/stable/modules/naive_bayes.html#multinomial-naive-bayes) 
+It is a supervised machine learning model that uses k-mer composition or reference database (and reads)  to assign a taxonomy
 ```bash
 $ singularity exec  --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime feature-classifier fit-classifier-naive-bayes \
-  --i-reference-reads results/silva-138-99-seqs.qza \
+  --i-reference-reads results/silva-138-99-v3v4-seqs.qza \
   --i-reference-taxonomy results/silva-138-99-tax.qza \
-  --o-classifier results/qiime_artifacts/classifier_silva138_99.qza
+  --o-classifier results/qiime_artifacts/classifier_silva138_99-v3v4.qza
 ```
-as the training can run for very long, abort it with ctrl+C, we will use an already trained classifier
+as the training can run for very long ( ~1h on one thread of AMD EPYC 9825 CPU, not parallelized) :hourglass: and can require a lot of RAM (up to ~24 Gb for this 16S v3-v4 classifier) , abort it with ctrl+C, we will use an already trained classifier: **classifier_silva-v3v4-138_99.qza**
 #### Classify the representative sequences associated to each ASV
-Now that we have the classifier we can use it to classify our sequences... or at least try, this step is RAM intensive
+Now that we have the classifier we can use it to classify our sequences... or at least try (~15 min on 20 thread of AMD EPYC 9825 CPU) :hourglass: 
 ```bash
 $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime feature-classifier classify-sklearn \
-  --p-n-jobs 4 \
-  --i-classifier results/qiime_artifacts/classifier_silva138_99.qza \
+  --p-n-jobs 8 \
+  --i-classifier results/qiime_artifacts/classifier_silva138_99-v3v4.qza \
   --i-reads results/qiime_artifacts/rep-seqs.qza \
   --o-classification results/qiime_artifacts/taxonomy.qza \
   --p-reads-per-batch 100
 ```
-If we fail due RAM constrain we can try another taxonomic assignment approach, for example:
+If we fail due RAM constraint to train a classifier, we may try another taxonomic assignment approach, for example one based on the alignment of AVS sequences to the database, such as the global alignment with [VSEARCH](https://github.com/torognes/vsearch) 
 ```bash
 $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime feature-classifier classify-consensus-vsearch \
   --i-query            rep-seqs.qza \
@@ -460,31 +472,32 @@ $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime featu
   --p-maxaccepts       10 \
   --p-strand           both \
   --p-top-hits-only    \
-  --p-threads          0 \
+  --p-threads          8 \
   --o-classification   taxonomy.qza \
   --o-search-results   vsearch_hits.qza \
   --verbose
 ```
-
-#### ...and plot samples composition in term of main taxa
+This is not as memory intensive as training a classifier but can run for long (depending on computational resources).
+In alternative, we can retrieve the already classified ASV from a previous run: **taxonomy.qza**
+#### Plot taxonomic composition of samples
 ```bash
 $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime taxa barplot \
-  --i-table results/qiime_artifacts/asv-table_no-singletons.qza \
+  --i-table results/qiime_artifacts/asv-table_norare.qza \
   --i-taxonomy results/qiime_artifacts/taxonomy.qza \
   --m-metadata-file data/metadata.csv \
   --o-visualization results/qiime_artifacts/taxa-bar-plots.qzv
 
 ```
 ### TASK 7
-Explore the interactive bar-plots, is it anything you would exclude for subsequent prokaryotes diversity analyses?
+Explore the interactive bar-plots, is it anything you would exclude for subsequent diversity analyses of the prokaryotic community?
 
 ## Filter the ASVs table using assigned taxonomy
 ```bash
 $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime taxa filter-table \
---i-table results/qiime_artifacts/asv-table_no-singletons.qza \
+--i-table results/qiime_artifacts/asv-table_norare.qza \
 --i-taxonomy results/qiime_artifacts/taxonomy.qza \
 --p-exclude Mitochondria,Chloroplast \
---o-filtered-table results/qiime_artifacts/asv-table_no-singletons_mito_chl_filtered.qza \
+--o-filtered-table results/qiime_artifacts/asv-table_norare_mito_chl_taxfiltered.qza \
 --verbose
 ```
 
@@ -501,7 +514,7 @@ Indices automatically calculated by QIIME pipeline
 
 **Beta diversity: a measure of variation in species composition between ecological communities or across spatial or environmental gradients. It quantifies the degree to which communities differ from one another in their species composition.**
 
-ASV table -> Distance/similarity index among samples -> distance/similarity matrix -> Ordination (PCoA, mMDS, ...) and other statistics to test the differences among (microbial) communities 
+ASV table -> Distance/similarity index among samples -> distance/similarity matrix -> Ordination (PCoA, mMDS, ...) and statistics to test the differences among (microbial) communities in different conditions (according to metadata) such as PERMANOVA 
 
 As some alpha diversity metrics also include **phylogenetic distance** in their formula, we are now inferring a (not particularly accurate... why?) phylogenetic tree based on the representative sequences of our ASVs
 ```bash
@@ -511,7 +524,7 @@ $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime phylo
   --o-masked-alignment results/qiime_artifacts/masked-aligned-rep-seqs.qza \
   --o-tree results/qiime_artifacts/unrooted-tree.qza \
   --o-rooted-tree results/qiime_artifacts/rooted-tree.qza \
-  --p-n-threads 4
+  --p-n-threads 8
 
 ```
 
@@ -519,42 +532,54 @@ $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime phylo
 ```bash
 $ singularity exec  --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime diversity core-metrics-phylogenetic \
   --i-phylogeny results/qiime_artifacts/rooted-tree.qza \
-  --i-table results/qiime_artifacts/asv-table_no-singletons_mito_chl_filtered.qza \
+  --i-table results/qiime_artifacts/asv-table_norare_mito_chl_taxfiltered.qza \
   --p-sampling-depth xxx \
   --m-metadata-file data/metadata.csv \
   --output-dir results/qiime_artifacts/diversity-core-metrics-phylogenetic
 ```
 Pick a suitable value for `--p-sampling-depth` : what method are you applying to normalize samples? What is the best trade off between sampling depth and samples lost? 
+### TASK 8
+Explore the ordinations produced (e.g. **bray_curtis_emperor.qzv** ). Can you identify a metadata (e.g. Time, Location, Substrate, ...) that seems to be informative according to the ordination plot?
 
 #### Hypotheses testing with alpha diversity
+For example using the Observed features (the raw number of ASV, without applying diversity indices)
 ```bash 
 $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime diversity alpha-group-significance \
   --i-alpha-diversity results/qiime_artifacts/diversity-core-metrics-phylogenetic/observed_features_vector.qza \
   --m-metadata-file data/metadata.csv \
   --o-visualization results/qiime_artifacts/diversity-core-metrics-phylogenetic/observed_features-significance.qzv
 ```
-
+### TASK 9
+Try modifying the previous command in order to statistically test hypotheses using other diversity indices? Is any significant difference highlighted? Can you draw any conclusion?
 #### ...and beta diversity using PERMANOVA ([Anderson, 2001](https://onlinelibrary.wiley.com/doi/full/10.1111/j.1442-9993.2001.01070.pp.x?casa_token=mATfoFu52gIAAAAA%3AohHkSLIMaycaxS5Sl9OeN5rWtZuTHblTwbzHul1okIExp_8N-9q-elh5DcYGFEBahIFStwKrzssA4ng))
 The following commands will test whether distances between samples within a group, are more similar to each other then they are to samples from the other groups. If you call this command with the `--p-pairwise` parameter, it will also perform pairwise tests that will allow you to determine which specific pairs of groups differ from one another, if any.
+In a nutshell: PERMANOVA compares **between-group variation** to **within-group variation**.
+Significance is assessed by repeatedly permuting group labels and recalculating the pseudo-F statistic. It answers to the question: "Are samples from the same metadata group more similar to each other than expected by chance?"
 ```bash
 $ singularity exec  --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif \
 qiime diversity beta-group-significance \
-  --i-distance-matrix results/qiime_artifacts/diversity-core-metrics-phylogenetic/unweighted_unifrac_distance_matrix.qza \
+  --i-distance-matrix results/qiime_artifacts/diversity-core-metrics-phylogenetic/bray_curtis_distance_matrix.qza \
   --m-metadata-file data/metadata.csv \
   --m-metadata-column Substrate \
-  --o-visualization results/qiime_artifacts/unweighted-unifrac-substrate-significance.qzv \
+  --o-visualization results/qiime_artifacts/diversity-core-metrics-phylogenetic/bray_curtis-substrate-significance.qzv \
   --p-pairwise
+
 ```
+Test also different grouping to highlight significant differences, what would you use given the previous results?
+
+
+
+
 
 ### FINAL TASK
-**BUILD A REPORT CONTAINING EVERY STEP YOU TOOK, REPORTING THE COMMANDS USED AND THEIR OUTPUT (meaningful examples or summary tables are enough if the output is large!). THE REPORT IS DUE THE LATEST **ON JULY 4th**, IT CAN BE DELIVERED IN .docx, .pdf, OR MARKDOWN TEXT FILE.** 
+**BUILD A REPORT CONTAINING EVERY STEP YOU TOOK, REPORTING THE COMMANDS USED AND THEIR OUTPUT (meaningful examples or summary tables are enough if the output is large!). IT CAN BE DELIVERED IN .docx, .pdf, OR MARKDOWN TEXT FILE.** 
 
 > 1) Pick a metabarcoding study from literature, with the following characteristics:
 > - A reasonable amount of samples (metabarcoding surveys can be huge, even though per single sample data are usually quite manageable -> short reads amplicon sequencing).
 > - Based on **one** barcode (if multiple barcodes libraries are used in the manuscript, you can select one, and only work on a subset of samples)
 > - Clearly explained and reproducible methods 
 > - Raw sequences available (e.g. at NCBI SRA)
-> - Available metadata 
+> - Available metadata files 
 > - It can be from whatever matrix, you have maximum freedom to select something which intrigues you.
 > Some examples: Human gut/oral/skin/... microbiota,  eDNA from water, air (yes, aerobiology does exists), soil, aerosol, plant, fungal, animal microbiota, honey, etc. 
 > 2) Identifiy the aim of the study.
