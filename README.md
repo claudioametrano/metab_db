@@ -93,7 +93,7 @@ Login to your account on the HPC remote server and start an interactive session
 ```bash
 $ ssh username@l2.gsc1.uni-graz.at
 
-$ srun --mem=16G --ntasks=8 --cpus-per-task=1 --time=10:00:00 --pty bash
+$ srun --mem=16G --ntasks=1 --cpus-per-task=8 --time=10:00:00 --pty bash
 ```
 
 Download this repository:
