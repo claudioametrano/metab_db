@@ -29,8 +29,8 @@ $ zcat data/16S_biochar_run2_1perc/*.fastq.gz | awk 'NR%4==2 {freq[length($0)]++
 
 - 2. Not as relevant as would be for older Illumina machines, such as the still commonly used Miseq. These are Novaseq reads, both of them slightly worse at the end, R2 in a liltte more visible way.
 - 3. Check out sample 25 with a portion of the reads a bit problematic, the rest is really high quality.
-- 4. They clearly start with primer sites, so nothing strange for amplion sequencing (if unsure BLAST some)
-- 5. Illumina adapterd seem absent from FastQC report, but primer are clearly there (see overrepresented sequences, or try yourself a grep)
+- 4. They clearly start with primer sites, so nothing strange for amplicon sequencing (if unsure BLAST some)
+- 5. Illumina adapters seem absent from FastQC report, but primer are clearly there (see overrepresented sequences, or try yourself a grep)
 - 6. Reads from Illumina Novaseq6000 are analysed with a 2 color channels chemistry, so all no signal reads are read as G 
 
 **TASK 3**
@@ -75,7 +75,7 @@ Resampling for rarefaction cannot be higher than the total frequency (something 
 Chloroplasts and mithochondria ancestors were free living prokaryotes and they have their own 16S rDNA with is captured with universal bacterial 16S primers (also, they can be abundant in marine water samples)
 
 **TASK 8**
-Neither the Subtrate  not the Location seem to correlate with the ordination of samples. The two time points instead clearly differ in term of prokaryotic communities.
+Neither the Subtrate or the Location seem to correlate with the ordination of samples. The two time points instead clearly differ in term of prokaryotic communities.
 The aim of the study was actually understanding if different charcoal % in the concrete  (C: control; B 5%; BB 10% charcoal) would influence prokaryotic (and eukaryotic) communities colonizing the docks.   
 
 **TASK 9**

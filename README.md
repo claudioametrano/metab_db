@@ -158,7 +158,7 @@ $ exit
 
 The same command can be launched in the container without necessary remaining in an interactive session:
 ```bash
-$ singularity exec fastqc\:0.12.1--hdfd78af_0 fastqc data/16S_biochar_run2_1perc/*.gz -o results/fastqc_raw_out --threads 8 --nogroup
+$ singularity exec -B $(pwd) fastqc\:0.12.1--hdfd78af_0 fastqc data/16S_biochar_run2_1perc/*.gz -o results/fastqc_raw_out --threads 8 --nogroup
 ```
 
 MultiQC aggregates results to highlight possible outliers
@@ -167,7 +167,7 @@ $ mkdir ./results/multiqc_raw_out
 
 $ singularity pull https://depot.galaxyproject.org/singularity/multiqc:1.26--pyhdfd78af_0
 
-$ singularity exec multiqc\:1.26--pyhdfd78af_0 multiqc results/fastqc_raw_out/ -o results/multiqc_raw_out
+$ singularity exec -B $(pwd) multiqc\:1.26--pyhdfd78af_0 multiqc results/fastqc_raw_out/ -o results/multiqc_raw_out
 ```
 ### **TASK2**
 > Now check the .html output of R1 and R2 fastq file from some of the samples (download it from server by Filezilla or any other client) and the aggregated report of MultuQC and try to answer the following questions:
@@ -185,7 +185,7 @@ $ mkdir results/GC_extreme
 $ cp data/16S_biochar_run2_1perc/*S41*R2* results/GC_extreme/
 $ gunzip results/GC_extreme/Bch-16S-V3V4-041-2_S41_L002_R2_001.fastq_1perc.fastq.gz
 $ cp solutions/select_fastq_reads_by_GC_cont.py results/GC_extreme/
-# The script we are goinmg to use requires BioPython
+# The script we are going to use requires BioPython
 $ singularity pull https://depot.galaxyproject.org/singularity/biopython:1.79
 $ singularity shell biopython\:1.79
 $ cd results/GC_extreme/
@@ -280,13 +280,13 @@ Run again fastQC and MultiQC (in a different output folder!!) and check what hap
 ```bash
 $ mkdir ./results/fastqc_trimmed_out
 
-$ singularity exec  fastqc\:0.12.1--hdfd78af_0 fastqc results/trimmed_fastq/*.gz -o results/fastqc_trimmed_out --threads 8 --nogroup
+$ singularity exec -B $(pwd) fastqc\:0.12.1--hdfd78af_0 fastqc results/trimmed_fastq/*.gz -o results/fastqc_trimmed_out --threads 8 --nogroup
 ```
 
 ```bash
 $ mkdir ./results/multiqc_trimmed_out
 
-$ singularity exec  multiqc\:1.26--pyhdfd78af_0 multiqc results/fastqc_trimmed_out/ -o results/multiqc_trimmed_out
+$ singularity exec -B $(pwd) multiqc\:1.26--pyhdfd78af_0 multiqc results/fastqc_trimmed_out/ -o results/multiqc_trimmed_out
 ```
 
 ## The QIIME environment
@@ -296,11 +296,13 @@ Obtain and test qiime container
 ```bash
 $ singularity pull docker://quay.io/qiime2/amplicon:2024.10
 
-$ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime --help
+$ singularity exec --home "$(pwd)":/home/qiime2 -B $(pwd) amplicon_2024.10.sif qiime --help
 
 
 ```
 qiime tries to create a small cache under /home/qiime2/ so we need to mount also the qiime home folder.
+>[!CAUTION]
+The qiime container is rather large (> 2Gb), if the pulling takes too long considering copying it from the shared folder (if available)
 
 ***NOTE***
 > you can choose to run the qiime command using its containerized version either interactively, using `singularity shell` or not, using `singularity exec`. > If you decide to run it interactively you can activate tab-completion. See the box below:  
@@ -317,7 +319,7 @@ $ exit
 ```bash
 $ mkdir ./results/qiime_artifacts/
 
-$ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime tools import   --type 'SampleData[PairedEndSequencesWithQuality]'   --input-path results/trimmed_fastq/ --input-format CasavaOneEightSingleLanePerSampleDirFmt --output-path results/qiime_artifacts/16S_biochar.qza
+$ singularity exec --home "$(pwd)":/home/qiime2 -B $(pwd) amplicon_2024.10.sif qiime tools import   --type 'SampleData[PairedEndSequencesWithQuality]'   --input-path results/trimmed_fastq/ --input-format CasavaOneEightSingleLanePerSampleDirFmt --output-path results/qiime_artifacts/16S_biochar.qza
 ```
  
 Something went wrong importing, can you tell why and find a solution to it?
@@ -330,12 +332,12 @@ $ singularity exec rename\:1.601--hdfd78af_1 rename 's/.trimmed.fastq.gz/_001.fa
 
 Now go back to QIIME container and re-try importing your fastq files, it should work...
 
-GOOD, CONGRATS! ... you imported your first dataset into QIIME
+CONGRATS! ... you imported your first dataset into QIIME
 
 ### 3. Denoising and AVS table 
-This step is quite slow even with only 10000 read as training set for DADA2 (~ 10 mins with 8 threads of AMD EPYC 9825):hourglass: ... :coffe: break?
+This step is quite slow even with only 10000 read as training set for DADA2 (~ 10 mins with 8 threads of AMD EPYC 9825)... 
 ```bash
-$ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime dada2 denoise-paired \
+$ singularity exec --home "$(pwd)":/home/qiime2 -B $(pwd) amplicon_2024**.10.sif qiime dada2 denoise-paired \
   --p-n-threads 8\
   --p-trunc-len-f 0 \
   --p-trunc-len-r 0 \
@@ -358,12 +360,12 @@ A report showing the step to get the ASV with DADA (Divisive Amplicon Denoising 
 ### Visualization of ASV table and representative sequences
 Qiime is a user friendly platform which integrates visualization and diversity/ecology analyses, let's take a look at them
 ```bash
-$ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime feature-table summarize \
+$ singularity exec --home "$(pwd)":/home/qiime2 -B $(pwd) amplicon_2024**.10.sif qiime feature-table summarize \
   --i-table results/qiime_artifacts/asv-table.qza \
   --o-visualization results/qiime_artifacts/asv-table.qzv \
   --m-sample-metadata-file data/metadata.csv
 
-$ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime feature-table tabulate-seqs \
+$ singularity exec --home "$(pwd)":/home/qiime2 -B $(pwd) amplicon_2024.10.sif qiime feature-table tabulate-seqs \
   --i-data results/qiime_artifacts/rep-seqs.qza \
   --o-visualization results/qiime_artifacts/rep-seqs.qzv
 ```
@@ -379,7 +381,7 @@ $ 7z x ./results/qiime_artifacts/asv-table.qza -o./results/qiime_artifacts/
 $ unzip ./results/qiime_artifacts/asv-table.qza -d ./results/qiime_artifacts/
 
 # name_of_the_folder according to the actual name
-$ singularity exec  --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif biom convert -i ./results/qiime_artifacts/name_of_the_folder/data/feature-table.biom -o ./results/asv-table.tsv --to-tsv
+$ singularity exec  --home "$(pwd)":/home/qiime2 -B $(pwd) amplicon_2024.10.sif biom convert -i ./results/qiime_artifacts/name_of_the_folder/data/feature-table.biom -o ./results/asv-table.tsv --to-tsv
 
 $ less -S results/asv-table.tsv
 ```
@@ -392,7 +394,7 @@ Possible strategy to limit this data issue:
 #### Remove extremely rare ASVs 
 ...which are more prone to be sequencing errors. It also diminishes the final matrix sparsity
 ```bash
-$ singularity exec  --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime feature-table filter-features \
+$ singularity exec  --home "$(pwd)":/home/qiime2  -B $(pwd) amplicon_2024.10.sif qiime feature-table filter-features \
 --i-table results/qiime_artifacts/asv-table.qza \
 --p-min-frequency 10 \
 --p-min-samples   2 \
@@ -402,7 +404,7 @@ $ singularity exec  --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime feat
 ### 4. Alpha rarefaction curves
 Rarefaction is a method used both to normalize metabarcoding data, here is used as a preliminary assessment of sampling effort, to see if it was enough to describe the target microbial community diversity
 ```bash
-$ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime diversity alpha-rarefaction \
+$ singularity exec --home "$(pwd)":/home/qiime2 -B $(pwd) amplicon_2024**.10.sif qiime diversity alpha-rarefaction \
 --i-table ./results/qiime_artifacts/asv-table_norare.qza \
 --p-max-depth xxx \
 --p-steps xxx \
@@ -430,7 +432,7 @@ $ cd ../..
 We are going to use our database with a method base on k-mer composition, therefore is beneficial to retain only the 16S region (V3-V4) amplified by our primers. If using an alignment method, shorter reference database will improve speed and resource use. 
 This will take quite long (~30 mins on 70 thread of AMD EPYC 9825 CPU) :hourglass: 
 ```bash
-$ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif   qiime feature-classifier extract-reads \
+$ singularity exec --home "$(pwd)":/home/qiime2 -B $(pwd) amplicon_2024.10.sif   qiime feature-classifier extract-reads \
 --i-sequences results/qiime_artifacts/silva-138-99-seqs.qza \
 --p-f-primer CCTACGGGNBGCASCAG \
 --p-r-primer GACTACNVGGGTATCTAATCC \
@@ -444,16 +446,18 @@ $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif   qiime fea
 Since reference sequences and the relative taxonomy are already imported in QIIME format we can train an object whose purpose is to assign taxonomy to our ASVs: [Naive Bayes classifier](https://scikit-learn.org/stable/modules/naive_bayes.html#multinomial-naive-bayes) 
 It is a supervised machine learning model that uses k-mer composition or reference database (and reads)  to assign a taxonomy
 ```bash
-$ singularity exec  --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime feature-classifier fit-classifier-naive-bayes \
+$ singularity exec  --home "$(pwd)":/home/qiime2 -B $(pwd) amplicon_2024.10.sif qiime feature-classifier fit-classifier-naive-bayes \
   --i-reference-reads results/silva-138-99-v3v4-seqs.qza \
   --i-reference-taxonomy results/silva-138-99-tax.qza \
   --o-classifier results/qiime_artifacts/classifier_silva138_99-v3v4.qza
 ```
-as the training can run for very long ( ~1h on one thread of AMD EPYC 9825 CPU, not parallelized) :hourglass: and can require a lot of RAM (up to ~24 Gb for this 16S v3-v4 classifier) , abort it with ctrl+C, we will use an already trained classifier: **classifier_silva-v3v4-138_99.qza**
+
+>[!CAUTION]
+as the training can run for very long ( ~1h on one thread of AMD EPYC 9825 CPU, not parallelized), and can require a lot of RAM (up to ~24 Gb for this 16S v3-v4 classifier) , abort it with ctrl+C, we will use an already trained classifier: **classifier_silva-v3v4-138_99.qza** from the shared folder (if available)
 #### Classify the representative sequences associated to each ASV
 Now that we have the classifier we can use it to classify our sequences... or at least try (~15 min on 20 thread of AMD EPYC 9825 CPU) :hourglass: 
 ```bash
-$ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime feature-classifier classify-sklearn \
+$ singularity exec --home "$(pwd)":/home/qiime2 -B $(pwd) amplicon_2024.10.sif qiime feature-classifier classify-sklearn \
   --p-n-jobs 8 \
   --i-classifier results/qiime_artifacts/classifier_silva138_99-v3v4.qza \
   --i-reads results/qiime_artifacts/rep-seqs.qza \
@@ -462,7 +466,7 @@ $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime featu
 ```
 If we fail due RAM constraint to train a classifier, we may try another taxonomic assignment approach, for example one based on the alignment of AVS sequences to the database, such as the global alignment with [VSEARCH](https://github.com/torognes/vsearch) 
 ```bash
-$ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime feature-classifier classify-consensus-vsearch \
+$ singularity exec --home "$(pwd)":/home/qiime2 -B $(pwd) amplicon_2024.10.sif qiime feature-classifier classify-consensus-vsearch \
   --i-query            rep-seqs.qza \
   --i-reference-reads  silva-138-99-seqs.qza \
   --i-reference-taxonomy silva-138-99-tax.qza \
@@ -477,11 +481,13 @@ $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime featu
   --o-search-results   vsearch_hits.qza \
   --verbose
 ```
+>[!CAUTION]
 This is not as memory intensive as training a classifier but can run for long (depending on computational resources).
-In alternative, we can retrieve the already classified ASV from a previous run: **taxonomy.qza**
+In alternative, we can retrieve the already classified ASV from a previous run: **taxonomy.qza** (also in the sahred folder, if provided)
+
 #### Plot taxonomic composition of samples
 ```bash
-$ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime taxa barplot \
+$ singularity exec --home "$(pwd)":/home/qiime2 -B $(pwd) amplicon_2024.10.sif qiime taxa barplot \
   --i-table results/qiime_artifacts/asv-table_norare.qza \
   --i-taxonomy results/qiime_artifacts/taxonomy.qza \
   --m-metadata-file data/metadata.csv \
@@ -493,7 +499,7 @@ Explore the interactive bar-plots, is it anything you would exclude for subseque
 
 ## Filter the ASVs table using assigned taxonomy
 ```bash
-$ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime taxa filter-table \
+$ singularity exec --home "$(pwd)":/home/qiime2 -B $(pwd) amplicon_2024.10.sif qiime taxa filter-table \
 --i-table results/qiime_artifacts/asv-table_norare.qza \
 --i-taxonomy results/qiime_artifacts/taxonomy.qza \
 --p-exclude Mitochondria,Chloroplast \
@@ -518,7 +524,7 @@ ASV table -> Distance/similarity index among samples -> distance/similarity matr
 
 As some alpha diversity metrics also include **phylogenetic distance** in their formula, we are now inferring a (not particularly accurate... why?) phylogenetic tree based on the representative sequences of our ASVs
 ```bash
-$ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime phylogeny align-to-tree-mafft-fasttree \
+$ singularity exec --home "$(pwd)":/home/qiime2 -B $(pwd) amplicon_2024.10.sif qiime phylogeny align-to-tree-mafft-fasttree \
   --i-sequences results/qiime_artifacts/rep-seqs.qza \
   --o-alignment results/qiime_artifacts/aligned-rep-seqs.qza \
   --o-masked-alignment results/qiime_artifacts/masked-aligned-rep-seqs.qza \
@@ -530,21 +536,21 @@ $ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime phylo
 
 #### Alpha and beta diversity calculation
 ```bash
-$ singularity exec  --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime diversity core-metrics-phylogenetic \
+$ singularity exec  --home "$(pwd)":/home/qiime2 -B $(pwd) amplicon_2024.10.sif qiime diversity core-metrics-phylogenetic \
   --i-phylogeny results/qiime_artifacts/rooted-tree.qza \
   --i-table results/qiime_artifacts/asv-table_norare_mito_chl_taxfiltered.qza \
   --p-sampling-depth xxx \
   --m-metadata-file data/metadata.csv \
   --output-dir results/qiime_artifacts/diversity-core-metrics-phylogenetic
 ```
-Pick a suitable value for `--p-sampling-depth` : what method are you applying to normalize samples? What is the best trade off between sampling depth and samples lost? 
+Pick a suitable value for `--p-sampling-depth` : what method are you applying to normalize samples? What is the best trade off between sampling depth and samples lost? (HINT: go back and check the visialization of the ASV table in Qiime View)
 ### TASK 8
 Explore the ordinations produced (e.g. **bray_curtis_emperor.qzv** ). Can you identify a metadata (e.g. Time, Location, Substrate, ...) that seems to be informative according to the ordination plot?
 
 #### Hypotheses testing with alpha diversity
 For example using the Observed features (the raw number of ASV, without applying diversity indices)
 ```bash 
-$ singularity exec --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif qiime diversity alpha-group-significance \
+$ singularity exec --home "$(pwd)":/home/qiime2 -B $(pwd) amplicon_2024.10.sif qiime diversity alpha-group-significance \
   --i-alpha-diversity results/qiime_artifacts/diversity-core-metrics-phylogenetic/observed_features_vector.qza \
   --m-metadata-file data/metadata.csv \
   --o-visualization results/qiime_artifacts/diversity-core-metrics-phylogenetic/observed_features-significance.qzv
@@ -554,9 +560,9 @@ Try modifying the previous command in order to statistically test hypotheses usi
 #### ...and beta diversity using PERMANOVA ([Anderson, 2001](https://onlinelibrary.wiley.com/doi/full/10.1111/j.1442-9993.2001.01070.pp.x?casa_token=mATfoFu52gIAAAAA%3AohHkSLIMaycaxS5Sl9OeN5rWtZuTHblTwbzHul1okIExp_8N-9q-elh5DcYGFEBahIFStwKrzssA4ng))
 The following commands will test whether distances between samples within a group, are more similar to each other then they are to samples from the other groups. If you call this command with the `--p-pairwise` parameter, it will also perform pairwise tests that will allow you to determine which specific pairs of groups differ from one another, if any.
 In a nutshell: PERMANOVA compares **between-group variation** to **within-group variation**.
-Significance is assessed by repeatedly permuting group labels and recalculating the pseudo-F statistic. It answers to the question: "Are samples from the same metadata group more similar to each other than expected by chance?"
+Significance is assessed by repeatedly permuting group labels and recalculating the pseudo-F statistic. **It answers to the question: "Are samples from the same metadata group more similar to each other than expected by chance?"**
 ```bash
-$ singularity exec  --home "$(pwd)":/home/qiime2 amplicon_2024.10.sif \
+$ singularity exec  --home "$(pwd)":/home/qiime2 -B $(pwd) amplicon_2024.10.sif \
 qiime diversity beta-group-significance \
   --i-distance-matrix results/qiime_artifacts/diversity-core-metrics-phylogenetic/bray_curtis_distance_matrix.qza \
   --m-metadata-file data/metadata.csv \
@@ -566,6 +572,12 @@ qiime diversity beta-group-significance \
 
 ```
 Test also different grouping to highlight significant differences, what would you use given the previous results?
+
+
+
+
+
+
 
 
 
